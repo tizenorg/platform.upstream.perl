@@ -1,0 +1,19 @@
+--- cpan/Pod-Perldoc/lib/Pod/Perldoc/ToMan.pm.orig	2012-05-23 15:16:34.000000000 +0000
++++ cpan/Pod-Perldoc/lib/Pod/Perldoc/ToMan.pm	2012-05-23 15:18:00.000000000 +0000
+@@ -64,7 +64,7 @@ sub _roffer_candidates {
+ 	my( $self ) = @_;
+ 
+ 	if( $self->is_openbsd ) { qw( mandoc groff nroff ) }
+-	else                    { qw( groff nroff mandoc ) }
++	else                    { qw( nroff groff mandoc ) }
+ 	}
+ 
+ sub _find_roffer {
+@@ -246,6 +246,7 @@ sub _collect_nroff_switches {
+ 	# don't have a -c switch, so that unconditionally adding it here
+ 	# would presumably be a Bad Thing   -- sburke@cpan.org
+     push @render_switches, '-c' if( $self->_is_roff and $self->is_cygwin );
++    push @render_switches, '-c' if( $self->_is_nroff );
+ 
+ 	return @render_switches;
+ 	}
