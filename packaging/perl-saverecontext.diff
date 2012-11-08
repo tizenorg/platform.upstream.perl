@@ -1,0 +1,28 @@
+--- ./regcomp.c.orig	2011-05-16 11:56:49.000000000 +0000
++++ ./regcomp.c	2011-05-16 11:57:14.000000000 +0000
+@@ -11929,8 +11929,23 @@ Perl_save_re_context(pTHX)
+ 
+ 		if (gvp) {
+ 		    GV * const gv = *gvp;
+-		    if (SvTYPE(gv) == SVt_PVGV && GvSV(gv))
+-			save_scalar(gv);
++		    if (SvTYPE(gv) == SVt_PVGV && GvSV(gv)) {
++			/* this is a copy of save_scalar() without the GETMAGIC call, RT#76538 */
++			SV ** const sptr = &GvSVn(gv);
++			SV * osv = *sptr;
++			SV * nsv = newSV(0);
++			save_pushptrptr(SvREFCNT_inc_simple(gv), SvREFCNT_inc(osv), SAVEt_SV);
++			if (SvTYPE(osv) >= SVt_PVMG && SvMAGIC(osv) && SvTYPE(osv) != SVt_PVGV) {
++			    if (SvGMAGICAL(osv)) {
++				const bool oldtainted = PL_tainted;
++				SvFLAGS(osv) |= (SvFLAGS(osv) &
++				    (SVp_IOK|SVp_NOK|SVp_POK)) >> PRIVSHIFT;
++				PL_tainted = oldtainted;
++			    }
++			    mg_localize(osv, nsv, 1);
++			}
++			*sptr = nsv;
++		    }
+ 		}
+ 	    }
+ 	}
