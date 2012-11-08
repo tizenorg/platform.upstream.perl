@@ -1,0 +1,22 @@
+--- ./ext/XS-APItest/APItest.xs.orig	2012-05-25 14:49:20.000000000 +0000
++++ ./ext/XS-APItest/APItest.xs	2012-05-25 14:49:54.000000000 +0000
+@@ -3084,7 +3084,8 @@ CODE:
+     PERL_SET_CONTEXT(interp_dup);
+ 
+     /* continue after 'clone_with_stack' */
+-    interp_dup->Iop = interp_dup->Iop->op_next;
++    if (interp_dup->Iop)
++	interp_dup->Iop = interp_dup->Iop->op_next;
+ 
+     /* run with new perl */
+     Perl_runops_standard(interp_dup);
+--- ./sv.c.orig	2012-05-25 14:50:00.000000000 +0000
++++ ./sv.c	2012-05-25 14:51:48.000000000 +0000
+@@ -12296,6 +12296,7 @@ Perl_cx_dup(pTHX_ PERL_CONTEXT *cxs, I32
+ 	    Perl_croak(aTHX_ "Cloning substitution context is unimplemented");
+ 	}
+ 	else {
++	    ncx->blk_oldcop = (COP*)any_dup(ncx->blk_oldcop, param->proto_perl);
+ 	    switch (CxTYPE(ncx)) {
+ 	    case CXt_SUB:
+ 		ncx->blk_sub.cv		= (ncx->blk_sub.olddepth == 0
