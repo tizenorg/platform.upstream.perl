@@ -22,15 +22,6 @@
 %perl_installarchlib    %(perl -V:installarchlib | sed "s!.*='!!;s!'.*!!")
 %perl_prefix            %{buildroot}
 
-# Macro to encapsulate perl requires (empty for fedora and suse > 11.3)
-# we keep the complicated form even here to easy sync the other macros with
-# perl-macros package
-# 
-%perl_requires() \
-%if 0%{?suse_version} > 0 && 0%{?suse_version} < 1700 \
-Requires: perl = %{perl_version} \
-%endif
-
 # suse specific macros
 #
 %perl_make_install make DESTDIR=$RPM_BUILD_ROOT install_vendor
