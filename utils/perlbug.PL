@@ -1038,6 +1038,7 @@ sub _message_headers {
     $headers{'Cc'}         = $cc        if ($cc);
     $headers{'Message-Id'} = $messageid if ($messageid);
     $headers{'Reply-To'}   = $from      if ($from);
+    $headers{'X-Webfrontend'} = 'perlbug';
     $headers{'From'}       = $from      if ($from);
     if ($have_attachment) {
         $headers{'MIME-Version'} = '1.0';

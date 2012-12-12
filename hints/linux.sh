@@ -53,7 +53,9 @@ ignore_versioned_solibs='y'
 # BSD compatibility library no longer needed
 # 'kaffe' has a /usr/lib/libnet.so which is not at all relevant for perl.
 # bind causes issues with several reentrant functions
-set `echo X "$libswanted "| sed -e 's/ bsd / /' -e 's/ net / /' -e 's/ bind / /'`
+set `echo X "$libswanted "| \
+    sed -e 's/ bsd / /' -e 's/ net / /' -e 's/ bind / /' \
+        -e 's/ db / /' -e 's/ gdbm / /' -e 's/ ndbm / /'`
 shift
 libswanted="$*"
 
@@ -147,6 +149,7 @@ case "$optimize" in
             esac
         ;;
     esac
+    optimize="$optimize --pipe"
     ;;
 esac
 
@@ -170,7 +173,7 @@ else
 fi
 
 case "$plibpth" in
-'') plibpth=`LANG=C LC_ALL=C $gcc $ccflags $ldflags -print-search-dirs | grep libraries |
+'UBUNTU') plibpth=`LANG=C LC_ALL=C $gcc $ccflags $ldflags -print-search-dirs | grep libraries |
 	cut -f2- -d= | tr ':' $trnl | grep -v 'gcc' | sed -e 's:/$::'`
     set X $plibpth # Collapse all entries on one line
     shift
@@ -203,6 +206,10 @@ case "$libc" in
     done
     ;;
 esac
+
+man1dir=/usr/share/man/man1
+man3dir=/usr/share/man/man3
+man3ext=3pm
 
 # Are we using ELF?  Thanks to Kenneth Albanowski <kjahds@kjahds.com>
 # for this test.
@@ -288,6 +295,29 @@ EOM
 	esac
 fi
 
+case `uname -m` in
+i?86) archname='i586-linux';;
+*)    archname=`uname -m`-linux;;
+esac
+
+case $archname in
+sparc64-linux) glibpth="/lib64 /usr/lib64";;
+esac
+
+cf_email='none'
+#libs='-lgdbm -ldb -ldl -lm -lc'
+#libs='-ldl -lm -lc'
+
+usedl='true'
+dlsrc='dl_dlopen.xs'
+d_dosuid='undef'
+d_bincompat3='y'
+
+# We don't want to add /usr/local/include and /usr/local/lib to the search
+# paths, they are already searched by default.
+locincpth=
+loclibpth=
+
 rm -f try.c a.out
 
 if ${sh:-/bin/sh} -c exit; then
@@ -337,6 +367,9 @@ else
 	echo "Couldn't find tcsh.  Csh-based globbing might be broken."
     fi
 fi
+csh=''
+d_csh='undef'
+full_csh=''
 
 # Shimpei Yamashita <shimpei@socrates.patnet.caltech.edu>
 # Message-Id: <33EF1634.B36B6500@pobox.com>
@@ -446,6 +479,8 @@ $define|true|[yY]*)
 	d_gmtime_r_proto="$define"
 	d_localtime_r_proto="$define"
 	d_random_r_proto="$define"
+
+	test -e /lib64/libc.so.6 && libs='-lm -ldl -lcrypt -lpthread'
 
 	;;
 esac

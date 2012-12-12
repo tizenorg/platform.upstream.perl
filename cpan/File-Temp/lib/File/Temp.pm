@@ -16,7 +16,7 @@ use Fcntl 1.03;
 use IO::Seekable;               # For SEEK_*
 use Errno;
 use Scalar::Util 'refaddr';
-require VMS::Stdio if $^O eq 'VMS';
+#require VMS::Stdio if $^O eq 'VMS';
 
 # pre-emptively load Carp::Heavy. If we don't when we run out of file
 # handles and attempt to call croak() we get an error message telling
