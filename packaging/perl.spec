@@ -329,5 +329,6 @@ EOF
 %doc README.macros
 %exclude /usr/lib/perl5/*/pod/perldiag.pod
 %doc /usr/lib/perl5/*/pod
+%doc %{_mandir}/man?/*
 
 %changelog

@@ -37,7 +37,7 @@ eval { local $SIG{__DIE__}; require Net::LocalCfg };
 # Try to get as much configuration info as possible from InternetConfig
 #
 $^O eq 'MacOS' and eval <<TRY_INTERNET_CONFIG;
-use Mac::InternetConfig;
+#use Mac::InternetConfig;
 
 {
 my %nc = (
