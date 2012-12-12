@@ -2,25 +2,16 @@ Name:           perl
 Summary:        The Perl interpreter
 License:        Artistic-1.0 or GPL-2.0+
 Group:          Development/Languages/Perl
-Version:        5.16.0
+Version:        5.16.2
 Release:        0
-%define pversion 5.16.0
+%define pversion 5.16.2
 Url:            http://www.perl.org/
-Source:         perl-5.16.0.tar.bz2
+Source:         perl-%{version}.tar.bz2
 Source1:        %name-rpmlintrc
 Source2:        macros.perl
 Source3:        README.macros
 Source4:        baselibs.conf
-Patch0:         perl-%{pversion}.dif
-Patch1:         perl-gracefull-net-ftp.diff
-Patch2:         perl-regexp-refoverflow.diff
-Patch3:         perl-nroff.diff
-Patch4:         perl-netcmdutf8.diff
-Patch5:         perl-HiRes.t-timeout.diff
-Patch6:         perl-saverecontext.diff
-Patch7:         perl-clone_oldcop.diff
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-PreReq:         perl-base = %version
+Requires(pre):         perl-base = %version
 BuildRequires:  db4-devel
 BuildRequires:  gdbm-devel
 BuildRequires:  bzip2-devel
@@ -100,11 +91,6 @@ Provides:       perl-Digest-MD5
 %if "%version" != "%pversion"
 Provides:       perl-base = %pversion-%release
 %endif
-# bug437293
-%ifarch ppc64
-Obsoletes:      perl-64bit
-%endif
-#
 
 %description base
 perl - Practical Extraction and Report Language
@@ -124,24 +110,14 @@ Summary:        Perl Documentation
 Group:          Development/Languages/Perl
 Requires:       perl = %{version}
 Provides:       perl:/usr/share/man/man3/CORE.3pm.gz
-%if 0%{?suse_version} >= 1120
 BuildArch:      noarch
-%endif
 
 %description doc
 Perl man pages and pod files.
 
 %prep
-%setup -q -n perl-5.16.0
+%setup -q -n perl-%{version}
 cp -p %{S:3} .
-%patch0
-%patch1
-%patch2
-%patch3
-%patch4
-%patch5
-%patch6
-%patch7
 
 %build
 RPM_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | sed -e "s/--param=ssp-buffer-size=32//g" )
@@ -328,8 +304,6 @@ EOF
      esac
    done)
 } > perl-base-excludes
-#%%post
-#%%{fillup_only -an suseconfig}
 
 %files base -f perl-base-filelist
 %defattr(-,root,root)
@@ -341,7 +315,6 @@ EOF
 %dir /usr/lib/perl5/%pversion/*-linux-thread-multi*/auto/POSIX
 /usr/bin/perl
 /usr/bin/perl%pversion
-%doc /usr/share/man/man1/perl.1.gz
 
 %files -f perl-base-excludes 
 %defattr(-,root,root)
@@ -354,10 +327,7 @@ EOF
 %files doc
 %defattr(-,root,root)
 %doc README.macros
-%exclude /usr/share/man/man1/perl.1.gz
 %exclude /usr/lib/perl5/*/pod/perldiag.pod
-%doc /usr/share/man/man1/*
-%doc /usr/share/man/man3/*
 %doc /usr/lib/perl5/*/pod
 
 %changelog
