@@ -112,7 +112,7 @@ paths="$paths /usr/5bin /etc /usr/gnu/bin /usr/new /usr/new/bin /usr/nbin"
 paths="$paths /opt/gnu/bin /opt/new /opt/new/bin /opt/nbin"
 paths="$paths /sys5.3/bin /sys5.3/usr/bin /bsd4.3/bin /bsd4.3/usr/ucb"
 paths="$paths /bsd4.3/usr/bin /usr/bsd /bsd43/bin /opt/ansic/bin /usr/ccs/bin"
-paths="$paths /etc /usr/lib /usr/ucblib /lib /usr/ccs/lib"
+paths="$paths /etc /usr/lib /usr/lib64 /usr/ucblib /lib /usr/ccs/lib"
 paths="$paths /sbin /usr/sbin /usr/libexec"
 paths="$paths /system/gnu_library/bin"
 
@@ -1341,7 +1341,7 @@ loclibpth="/usr/local/lib /opt/local/lib /usr/gnu/lib"
 loclibpth="$loclibpth /opt/gnu/lib /usr/GNU/lib /opt/GNU/lib"
 
 : general looking path for locating libraries
-glibpth="/lib /usr/lib $xlibpth"
+glibpth="/lib /usr/lib /lib64 /usr/lib64 $xlibpth"
 glibpth="$glibpth /usr/ccs/lib /usr/ucblib /usr/local/lib"
 test -f /usr/shlib/libc.so && glibpth="/usr/shlib $glibpth"
 test -f /shlib/libc.so     && glibpth="/shlib $glibpth"
@@ -2389,7 +2389,7 @@ uname
 zip
 "
 pth=`echo $PATH | sed -e "s/$p_/ /g"`
-pth="$pth /lib /usr/lib"
+pth="$pth /lib /usr/lib /lib64 /usr/lib64"
 for file in $loclist; do
 	eval xxx=\$$file
 	case "$xxx" in
@@ -11169,7 +11169,7 @@ void xxx(int n, ...)
     va_start(args, n);
     exit((unsigned long)vsprintf(buf,"%s",args) > 10L);
 }
-int main() { xxx(1, "foo"); }
+int main() { xxx(1, "foo"); return 0; }
 
 #else /* I_VARARGS */
 
@@ -11181,7 +11181,7 @@ va_dcl
     va_start(args);
     exit((unsigned long)vsprintf(buf,"%s",args) > 10L);
 }
-int main() { xxx("foo"); }
+int main() { xxx("foo"); return 0; }
 
 #endif
 
@@ -19174,14 +19174,20 @@ int main(int argc, char *argv[])
 }
 EOCP
 	set try
+	# this is really stupid, but we have to link in the -ldb to have
+	# the above program succeed
+	_old_libs="$libs"
+	libs="$libs -ldb"
 	if eval $compile_ok && $run ./try; then
 		echo 'Looks OK.' >&4
+		libs="$_old_libs"
 		set `$run ./try 1`
 		db_version_major=$1
 		db_version_minor=$2
 		db_version_patch=$3
 	else
 		echo "I can't use Berkeley DB with your <db.h>.  I'll disable Berkeley DB." >&4
+		libs="$_old_libs"
 		i_db=$undef
 		case " $libs " in
 		*"-ldb "*)
@@ -19224,7 +19230,7 @@ int main()
 }
 #endif
 EOCP
-	if $cc $ccflags -c try.c >try.out 2>&1 ; then
+	if $cc $ccflags -c try.c -ldb >try.out 2>&1 ; then
 		if $contains warning try.out >>/dev/null 2>&1 ; then
 			db_hashtype='int'
 		else
@@ -19269,7 +19275,7 @@ int main()
 }
 #endif
 EOCP
-	if $cc $ccflags -c try.c  >try.out 2>&1 ; then
+	if $cc $ccflags -c try.c -ldb >try.out 2>&1 ; then
 		if $contains warning try.out >>/dev/null 2>&1 ; then
 			db_prefixtype='int'
 		else
@@ -23602,7 +23608,7 @@ passcat='$passcat'
 patchlevel='$patchlevel'
 path_sep='$path_sep'
 perl5='$perl5'
-perl='$perl'
+perl='perl'
 perl_patchlevel='$perl_patchlevel'
 perl_static_inline='$perl_static_inline'
 perladmin='$perladmin'

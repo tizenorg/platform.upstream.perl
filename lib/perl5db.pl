@@ -3194,6 +3194,8 @@ reading another.
                             open( OUT, ">&STDOUT" )    # XXX: lost message
                               || &warn("Can't restore DB::OUT");
                         }
+			# tell readline the new OUT handle
+			$term->Attribs()->{outstream} = *OUT if defined &Term::ReadLine::Gnu::readline;
                         next CMD;
                     } ## end unless ($piped = open(OUT,...
 
@@ -3320,6 +3322,8 @@ our standard filehandles for input and output.
                 # if necessary,
                 close(SAVEOUT);
                 select($selected), $selected = "" unless $selected eq "";
+		# tell readline the new OUT handle
+		$term->Attribs()->{outstream} = *OUT if defined &Term::ReadLine::Gnu::readline;
 
                 # No pipes now.
                 $piped = "";

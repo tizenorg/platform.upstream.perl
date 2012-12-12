@@ -1005,13 +1005,13 @@ sub make_configlocal_pm {
 	    $LocalMod{$enc} ||= $mod;
 	}
     };
-    File::Find::find({wanted => $wanted}, @INC);
+    File::Find::find({wanted => $wanted}, grep {$_ ne '.'} @INC);
     $_ModLines = "";
     for my $enc ( sort keys %LocalMod ) {
         $_ModLines .=
           qq(\$Encode::ExtModule{'$enc'} = "$LocalMod{$enc}";\n);
     }
-    warn $_ModLines;
+    warn $_ModLines if $_ModLines ne '';
     $_LocalVer = _mkversion();
     $_E2X      = find_e2x();
     $_Inc      = $INC{"Encode.pm"};

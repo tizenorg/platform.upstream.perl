@@ -207,8 +207,11 @@ foreach my $key (sort(keys(%{$self->{data}})))
    {
    if (! -e $key)
       {
-      push(@missing, $key);
-      delete($self->{data}{$key}) if ($remove);
+      if (($key !~ m!/man/!) || ! -e "$key.gz")
+	{
+        push(@missing, $key);
+        delete($self->{data}{$key}) if ($remove);
+	}
       }
    }
 return(@missing);
