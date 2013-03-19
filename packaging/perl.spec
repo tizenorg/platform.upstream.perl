@@ -1,7 +1,7 @@
 Name:           perl
 Summary:        The Perl interpreter
 License:        Artistic-1.0 or GPL-2.0+
-Group:          Development/Languages/Perl
+Group:          Platform Development/Perl
 Version:        5.16.2
 Release:        0
 %define pversion 5.16.2
@@ -85,7 +85,7 @@ series.
 
 %package base
 Summary:        The Perl interpreter
-Group:          Development/Languages/Perl
+Group:          Platform Development/Perl
 Provides:       perl-Digest
 Provides:       perl-Digest-MD5
 %if "%version" != "%pversion"
@@ -107,7 +107,7 @@ itself.
 
 %package doc
 Summary:        Perl Documentation
-Group:          Development/Languages/Perl
+Group:          Platform Development/Perl
 Requires:       perl = %{version}
 Provides:       perl:/usr/share/man/man3/CORE.3pm.gz
 BuildArch:      noarch
