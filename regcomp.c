@@ -7856,7 +7856,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp,U32 depth)
 
                 ret = reganode(pRExC_state, GOSUB, num);
                 if (!SIZE_ONLY) {
-		    if (num > (I32)RExC_rx->nparens) {
+		    if (num < 0 || num > (I32)RExC_rx->nparens) {
 			RExC_parse++;
 			vFAIL("Reference to nonexistent group");
 	            }
@@ -9461,7 +9461,7 @@ tryagain:
                     if (num < 1)
                         vFAIL("Reference to nonexistent or unclosed group");
                 }
-		if (!isg && num > 9 && num >= RExC_npar)
+		if (!isg && (num < 0 || (num > 9 && num >= RExC_npar)))
 		    goto defchar;
 		else {
 		    char * const parse_start = RExC_parse - 1; /* MJD */
@@ -9475,7 +9475,7 @@ tryagain:
                         RExC_parse++;
                     }    
 		    if (!SIZE_ONLY) {
-		        if (num > (I32)RExC_rx->nparens)
+		        if (num < 0 || num > (I32)RExC_rx->nparens)
 			    vFAIL("Reference to nonexistent group");
 		    }
 		    RExC_sawback = 1;
@@ -9709,7 +9709,7 @@ tryagain:
 		    case '0': case '1': case '2': case '3':case '4':
 		    case '5': case '6': case '7': case '8':case '9':
 			if (*p == '0' ||
-			    (isDIGIT(p[1]) && atoi(p) >= RExC_npar))
+			    (isDIGIT(p[1]) && (U32)atoi(p) >= (U32)RExC_npar))
 			{
 			    I32 flags = PERL_SCAN_SILENT_ILLDIGIT;
 			    STRLEN numlen = 3;
