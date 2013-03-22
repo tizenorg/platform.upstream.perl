@@ -9771,7 +9771,7 @@ S_reg(pTHX_ RExC_state_t *pRExC_state, I32 paren, I32 *flagp,U32 depth)
 
                 ret = reganode(pRExC_state, GOSUB, num);
                 if (!SIZE_ONLY) {
-		    if (num > (I32)RExC_rx->nparens) {
+		    if (num < 0 || num > (I32)RExC_rx->nparens) {
 			RExC_parse++;
 			vFAIL("Reference to nonexistent group");
 	            }
@@ -11597,7 +11597,7 @@ tryagain:
                         RExC_parse++;
                     }
 		    if (!SIZE_ONLY) {
-		        if (num > (I32)RExC_rx->nparens)
+		        if (num < 0 || num > (I32)RExC_rx->nparens)
 			    vFAIL("Reference to nonexistent group");
 		    }
 		    RExC_sawback = 1;

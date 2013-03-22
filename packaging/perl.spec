@@ -2,26 +2,22 @@ Name:           perl
 Summary:        The Perl interpreter
 License:        Artistic-1.0 or GPL-2.0+
 Group:          Platform Development/Perl
-Version:        5.16.2
+Version:        5.16.3
 Release:        0
-%define pversion 5.16.2
+%define pversion 5.16.3
 Url:            http://www.perl.org/
 Source:         perl-%{version}.tar.bz2
 Source1:        %name-rpmlintrc
 Source2:        macros.perl
 Source3:        README.macros
 Source4:        baselibs.conf
-Requires(pre):         perl-base = %version
 BuildRequires:  db4-devel
 BuildRequires:  gdbm-devel
 BuildRequires:  bzip2-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  zlib-devel
 #
-%if "%version" != "%pversion"
-Provides:       perl = %pversion-%release
-%endif
-Provides:	/bin/perl
+Provides:	    /bin/perl
 Provides:       perl-500
 Provides:       perl-macros
 Provides:       perl(:MODULE_COMPAT_%pversion)
@@ -83,27 +79,6 @@ than beautiful (tiny, elegant, and minimal).
 Some of the modules available on CPAN can be found in the "perl"
 series.
 
-%package base
-Summary:        The Perl interpreter
-Group:          Platform Development/Perl
-Provides:       perl-Digest
-Provides:       perl-Digest-MD5
-%if "%version" != "%pversion"
-Provides:       perl-base = %pversion-%release
-%endif
-
-%description base
-perl - Practical Extraction and Report Language
-
-Perl is optimized for scanning arbitrary text files, extracting
-information from those text files, and printing reports based on that
-information.  It is also good for many system management tasks.
-
-Perl is intended to be practical (easy to use, efficient, and complete)
-rather than beautiful (tiny, elegant, and minimal).
-
-This package contains only some basic modules and the perl binary
-itself.
 
 %package doc
 Summary:        Perl Documentation
@@ -144,11 +119,6 @@ mv savelib lib
 ./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads -Di_db -Di_dbm -Di_ndbm -Di_gdbm -Dd_dbm_open $options
 make %{?_smp_mflags}
 
-%check
-%ifnarch %arm
-#export LD_AS_NEEDED=0
-#make test
-%endif
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
@@ -185,40 +155,6 @@ rm $RPM_BUILD_ROOT/usr/lib/perl5/*/*/CORE/libperl.a
 $RPM_BUILD_ROOT/usr/bin/perl -e '$r=chr(128)."\\x{100}";/$r/'
 # test perl-regexp-refoverflow.diff
 $RPM_BUILD_ROOT/usr/bin/perl -e '/\6666666666/'
-%if 0
-# remove unrelated target/os manpages
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlaix.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlamiga.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlapollo.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlbeos.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlbs2000.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlcygwin.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perldgux.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perldos.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlepoc.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlfreebsd.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlhpux.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlhurd.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlirix.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlmachten.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlmacos.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlmacosx.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlmint.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlnetware.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlopenbsd.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlos2.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlos390.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlos400.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlplan9.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlqnx.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlsolaris.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perltru64.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perluts.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlvmesa.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlvms.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlvos.1*
-rm $RPM_BUILD_ROOT/usr/share/man/man1/perlwin32.1*
-%endif
 cat << EOF > perl-base-filelist
 /usr/lib/perl5/%pversion/B/Deparse.pm
 /usr/lib/perl5/%pversion/Carp.pm
@@ -303,9 +239,9 @@ EOF
      *) echo "%%exclude /$i" ;;
      esac
    done)
-} > perl-base-excludes
+} >> perl-base-filelist
 
-%files base -f perl-base-filelist
+%files -f perl-base-filelist
 %defattr(-,root,root)
 %dir /usr/lib/perl5
 %dir /usr/lib/perl5/%pversion
@@ -313,15 +249,6 @@ EOF
 %dir /usr/lib/perl5/%pversion/*-linux-thread-multi*
 %dir /usr/lib/perl5/%pversion/*-linux-thread-multi*/auto
 %dir /usr/lib/perl5/%pversion/*-linux-thread-multi*/auto/POSIX
-/usr/bin/perl
-/usr/bin/perl%pversion
-
-%files -f perl-base-excludes 
-%defattr(-,root,root)
-%exclude /usr/bin/perl
-%exclude /usr/bin/perl%pversion
-/usr/bin/*
-/usr/lib/perl5/*
 %config %{_sysconfdir}/rpm/macros.perl
 
 %files doc
