@@ -231,15 +231,8 @@ cat << EOF > perl-base-filelist
 /usr/lib/perl5/%pversion/*-linux-thread-multi*/lib.pm
 /usr/lib/perl5/%pversion/*-linux-thread-multi*/re.pm
 EOF
-{
-  sed -e 's/^/%%exclude /' perl-base-filelist
-  (cd $RPM_BUILD_ROOT
-   for i in usr/lib/perl5/*/pod/*; do
-     case $i in */perldiag.pod) ;;
-     *) echo "%%exclude /$i" ;;
-     esac
-   done)
-} >> perl-base-filelist
+
+
 
 %files -f perl-base-filelist
 %defattr(-,root,root)
@@ -250,6 +243,8 @@ EOF
 %dir /usr/lib/perl5/%pversion/*-linux-thread-multi*/auto
 %dir /usr/lib/perl5/%pversion/*-linux-thread-multi*/auto/POSIX
 %config %{_sysconfdir}/rpm/macros.perl
+/usr/lib/perl5/*
+/usr/bin/*
 
 %files doc
 %defattr(-,root,root)
