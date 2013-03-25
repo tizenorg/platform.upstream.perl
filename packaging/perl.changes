@@ -1,3 +1,6 @@
+* Mon Mar 25 2013 Anas Nashif <anas.nashif@intel.com> submit/trunk/20130322.222652@5cf5c2d
+- Provide perl-base
+
 * Fri Mar 22 2013 Anas Nashif <anas.nashif@intel.com> v5.16.3@a4faae8
 - Update to 5.16.3
 
