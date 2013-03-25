@@ -22,6 +22,8 @@ Provides:       perl-500
 Provides:       perl-macros
 Provides:       perl(:MODULE_COMPAT_%pversion)
 Obsoletes:      perl-macros
+Provides:       perl-base
+Obsoletes:      perl-base
 Provides:       perl-Filter-Simple
 Provides:       perl-I18N-LangTags
 Provides:       perl-MIME-Base64
