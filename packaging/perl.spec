@@ -11,6 +11,7 @@ Source1:        %name-rpmlintrc
 Source2:        macros.perl
 Source3:        README.macros
 Source4:        baselibs.conf
+Source1001: 	perl.manifest
 BuildRequires:  db4-devel
 BuildRequires:  gdbm-devel
 BuildRequires:  bzip2-devel
@@ -94,6 +95,7 @@ Perl man pages and pod files.
 
 %prep
 %setup -q -n perl-%{version}
+cp %{SOURCE1001} .
 cp -p %{S:3} .
 
 %build
@@ -237,6 +239,7 @@ EOF
 
 
 %files -f perl-base-filelist
+%manifest %{name}.manifest
 %defattr(-,root,root)
 %dir /usr/lib/perl5
 %dir /usr/lib/perl5/%pversion
@@ -249,6 +252,7 @@ EOF
 /usr/bin/*
 
 %files doc
+%manifest %{name}.manifest
 %defattr(-,root,root)
 %doc README.macros
 %exclude /usr/lib/perl5/*/pod/perldiag.pod
