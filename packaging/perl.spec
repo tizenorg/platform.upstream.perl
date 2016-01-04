@@ -111,7 +111,7 @@ options="-Doptimize='$RPM_OPT_FLAGS -Wall -pipe'"
 options="$options -Accflags='-DPERL_USE_SAFE_PUTENV'"
 options="$options -Dotherlibdirs=/usr/lib/perl5/site_perl"
 chmod 755 ./configure.gnu
-./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads -Di_db -Di_dbm -Di_ndbm -Di_gdbm -Dd_dbm_open -Duseshrplib=\'true\' $options
+./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads  -Duseshrplib=\'true\' $options
 %__make %{?_smp_mflags}
 cp -p libperl.so savelibperl.so
 cp -p lib/Config.pm saveConfig.pm
@@ -120,7 +120,7 @@ cp -p lib/Config_heavy.pl saveConfig_heavy.pl
 %__make clobber
 rm -rf lib
 mv savelib lib
-./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads -Di_db -Di_dbm -Di_ndbm -Di_gdbm -Dd_dbm_open $options
+./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads  $options
 %__make %{?_smp_mflags}
 
 
