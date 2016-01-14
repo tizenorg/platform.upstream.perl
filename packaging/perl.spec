@@ -12,7 +12,6 @@ Source3:        README.macros
 Source4:        baselibs.conf
 Source1001:     perl.manifest
 BuildRequires:  db4-devel
-BuildRequires:  gdbm-devel
 BuildRequires:  bzip2-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  zlib-devel
