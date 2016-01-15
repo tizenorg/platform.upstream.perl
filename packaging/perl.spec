@@ -1,9 +1,12 @@
+%bcond_with gdbm
+%define release_flags %{?with_gdbm:+gdbm}
+
 Name:           perl
 Summary:        The Perl interpreter
 License:        Artistic-1.0 or GPL-2.0+
 Group:          Platform Development/Perl
 Version:        5.20.0
-Release:        0
+Release:        0%{?release_flags}
 Url:            http://www.perl.org/
 Source:         perl-%{version}.tar.bz2
 Source1:        %name-rpmlintrc
@@ -12,10 +15,12 @@ Source3:        README.macros
 Source4:        baselibs.conf
 Source1001:     perl.manifest
 BuildRequires:  db4-devel
-BuildRequires:  gdbm-devel
 BuildRequires:  bzip2-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  zlib-devel
+%if %{with gdbm}
+BuildRequires:  gdbm-devel
+%endif
 #
 Provides:       /bin/perl
 Provides:       perl-500
@@ -111,7 +116,11 @@ options="-Doptimize='$RPM_OPT_FLAGS -Wall -pipe'"
 options="$options -Accflags='-DPERL_USE_SAFE_PUTENV'"
 options="$options -Dotherlibdirs=/usr/lib/perl5/site_perl"
 chmod 755 ./configure.gnu
+%if %{with gdbm}
+./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads -Di_db -Di_dbm -Di_ndbm -Di_gdbm -Dd_dbm_open -Duseshrplib=\'true\' $options
+%else
 ./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads  -Duseshrplib=\'true\' $options
+%endif
 %__make %{?_smp_mflags}
 cp -p libperl.so savelibperl.so
 cp -p lib/Config.pm saveConfig.pm
@@ -120,7 +129,11 @@ cp -p lib/Config_heavy.pl saveConfig_heavy.pl
 %__make clobber
 rm -rf lib
 mv savelib lib
+%if %{with gdbm}
+./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads -Di_db -Di_dbm -Di_ndbm -Di_gdbm -Dd_dbm_open $options
+%else
 ./configure.gnu --prefix=/usr -Dvendorprefix=/usr -Dinstallusrbinperl -Dusethreads  $options
+%endif
 %__make %{?_smp_mflags}
 
 
