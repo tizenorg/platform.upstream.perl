@@ -98,7 +98,7 @@ cp %{SOURCE1001} .
 cp -p %{S:3} .
 
 %build
-RPM_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | sed -e "s/--param=ssp-buffer-size=32//g" )
+RPM_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | sed -e "s/--param=ssp-buffer-size=4//g" )
 export RPM_OPT_FLAGS
 cp -a lib savelib
 export LD_AS_NEEDED=0
