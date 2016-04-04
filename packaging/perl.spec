@@ -102,7 +102,7 @@ export CFLAGS+=" -fvisibility=hidden"
   export CXXFLAGS+=" -fvisibility=hidden"
   
 RPM_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | sed -e "s/--param=ssp-buffer-size=4//g" )
-export RPM_OPT_FLAGS
+export RPM_OPT_FLAGS+=" -fvisibility=hidden"
 cp -a lib savelib
 export LD_AS_NEEDED=0
 export BZIP2_LIB=%{_libdir}
