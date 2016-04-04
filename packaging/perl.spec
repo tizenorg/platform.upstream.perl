@@ -98,6 +98,9 @@ cp %{SOURCE1001} .
 cp -p %{S:3} .
 
 %build
+export CFLAGS+=" -fvisibility=hidden"
+  export CXXFLAGS+=" -fvisibility=hidden"
+  
 RPM_OPT_FLAGS=$(echo $RPM_OPT_FLAGS | sed -e "s/--param=ssp-buffer-size=4//g" )
 export RPM_OPT_FLAGS
 cp -a lib savelib
